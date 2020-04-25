@@ -124,6 +124,17 @@ case class BitwiseNOTOperation(address: Value, value: Value) extends Operation {
   }
 }
 
+case class CallOperation(address: Value) extends Operation {
+  val instructionLength = Value(2)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"Running Call Operation putting next instruction ${programme.pointer + instructionLength} in stack and moving to address: $address")
+    programme.copy(pointer = interpret(address),
+      stack = (programme.pointer + instructionLength) +: programme.stack
+    )
+  }
+}
+
 
 case class PushOperation(value: Value) extends Operation {
   val instructionLength = Value(2)
@@ -156,6 +167,16 @@ case class AddOperation(address: Value, valueA: Value, valueB: Value) extends Op
     debugLog(s"Running Add Operation with values: (Address: $address, a: $valueA, b: $valueB)")
     programme.copy(pointer = programme.pointer + instructionLength,
                     memory = programme.memory.set(address, interpret(valueA) + interpret(valueB)))
+  }
+}
+
+case class MultiplyOperation(address: Value, valueA: Value, valueB: Value) extends Operation {
+  val instructionLength = Value(4)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"Running Multiply Operation with values: (Address: $address, a: $valueA, b: $valueB)")
+    programme.copy(pointer = programme.pointer + instructionLength,
+      memory = programme.memory.set(address, interpret(valueA) * interpret(valueB)))
   }
 }
 

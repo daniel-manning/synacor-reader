@@ -18,6 +18,16 @@ class OperationSpec extends AnyFreeSpec with Matchers {
     }
   }
 
+  "Multiply Operation" - {
+
+    "when given a number of a register must use the register's value" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(8,2,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = MultiplyOperation(Value(32768), Value(32769), Value(4)).run()(programme, runningSettings)
+
+      finalProgramme.memory.get(Value(32768)) mustBe Value(8)
+    }
+  }
+
   "Jump Operation" - {
     "when given an address must move pointer to that address" in {
       val programme = Machine(Value(0), Memory(Map.empty, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq.empty)
@@ -219,6 +229,15 @@ class OperationSpec extends AnyFreeSpec with Matchers {
       val programme = Machine(Value(0), Memory(Map.empty, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq.empty)
       val finalProgramme = BitwiseNOTOperation(Value(32768), Value(32769)).run()(programme, runningSettings)
       finalProgramme.memory.get(Value(32768)) mustBe Value(32767)
+    }
+  }
+
+  "Call Operation" - {
+    "must put the next instruction in stack and jump to address" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(0, 0, 0, 0, 0, 0, 0, 0).map(Value)), Seq.empty)
+      val finalProgramme = CallOperation(Value(144)).run()(programme, runningSettings)
+      finalProgramme.stack.head mustBe Value(2)
+      finalProgramme.pointer mustBe Value(144)
     }
   }
 

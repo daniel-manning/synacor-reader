@@ -6,4 +6,7 @@ case class Value(value: Int){
   def +(that: Value): Value =
     Value((value + that.value) % 32768)
 
+  def *(that: Value): Value =
+    Value((value * that.value) % 32768)
+
 }
