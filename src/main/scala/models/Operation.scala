@@ -95,12 +95,35 @@ case class BitwiseANDOperation(address: Value, valueA: Value, valueB: Value) ext
   val instructionLength = Value(4)
 
   def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
-    debugLog(s"Running Greater than Operation setting address: $address by testing value of a: $valueA and b: $valueB")
+    debugLog(s"Running Bitwise AND Operation setting address: $address with value of a: $valueA and b: $valueB")
     programme.copy(pointer = programme.pointer + instructionLength,
       memory = programme.memory.set(address, Value(interpret(valueA).value & interpret(valueB).value))
     )
   }
 }
+
+case class BitwiseOROperation(address: Value, valueA: Value, valueB: Value) extends Operation {
+  val instructionLength = Value(4)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"Running Bitwise OR Operation setting address: $address with value of a: $valueA and b: $valueB")
+    programme.copy(pointer = programme.pointer + instructionLength,
+      memory = programme.memory.set(address, Value(interpret(valueA).value | interpret(valueB).value))
+    )
+  }
+}
+
+case class BitwiseNOTOperation(address: Value, value: Value) extends Operation {
+  val instructionLength = Value(3)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"Running Bitwise NOT Operation setting address: $address with value of a: $value")
+    programme.copy(pointer = programme.pointer + instructionLength,
+      memory = programme.memory.set(address, Value(~(interpret(value).value) & 0x7fff))
+    )
+  }
+}
+
 
 case class PushOperation(value: Value) extends Operation {
   val instructionLength = Value(2)

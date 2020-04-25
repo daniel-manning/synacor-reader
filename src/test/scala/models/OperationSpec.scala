@@ -188,4 +188,38 @@ class OperationSpec extends AnyFreeSpec with Matchers {
     }
   }
 
+  "Bitwise OR Operation" - {
+    "two values have bitwise AND done and value stored in address" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = BitwiseOROperation(Value(32768), Value(111), Value(121)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(127)
+    }
+
+    "two registers have bitwise OR done and value stored in address" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(111,121,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = BitwiseOROperation(Value(32768), Value(32768), Value(32769)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(127)
+    }
+  }
+
+  "Bitwise NOT Operation" - {
+    "a value have bitwise NOT done and value stored in address" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = BitwiseNOTOperation(Value(32768), Value(178)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(32589)
+    }
+
+    "two registers have bitwise OR done and value stored in address" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(111,178,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = BitwiseNOTOperation(Value(32768), Value(32769)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(32589)
+    }
+
+    "a zero value should be converted appropriately" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = BitwiseNOTOperation(Value(32768), Value(32769)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(32767)
+    }
+  }
+
 }
