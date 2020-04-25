@@ -9,7 +9,7 @@ class MachineSpec extends AnyFreeSpec with Matchers {
 
   "Machine" - {
     "when given a simple programme should operate correctly" in {
-      implicit val runningSettings: RunningSettings = RunningSettings("test", debugOutput = true)
+      implicit val runningSettings: RunningSettings = RunningSettings("test", debugOutput = false)
 
       val beginningState = Machine(
         pointer = Value(0),
@@ -17,7 +17,7 @@ class MachineSpec extends AnyFreeSpec with Matchers {
           programme = Map.empty,
           registers = Vector(0,0,0,0,0,0,0,0).map(Value)
         ),
-        stack = mutable.Stack.empty
+        stack = Seq.empty
        ).construct("9,32768,32769,4,19,32768")
 
       val finalState = beginningState.runProgramme()

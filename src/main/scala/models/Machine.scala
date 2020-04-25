@@ -25,13 +25,19 @@ case class Memory(programme: Map[Value, Value], registers: IndexedSeq[Value]) ex
 
 //machine should have 8 registers
 //unbounded stack
-case class Machine (pointer: Value, memory: Memory, stack: mutable.Stack[Value]) extends Logable {
+case class Machine (pointer: Value, memory: Memory, stack: Seq[Value]) extends Logable {
   def nextOperation()(implicit settings: RunningSettings): Operation = {
     val nextOpCode = memory.get(pointer)
     debugLog(s"now running opCode: $nextOpCode")
 
     nextOpCode match {
       case Value(0) => ExitOperation
+      case Value(1) => SetOperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)))
+      case Value(2) => PushOperation(memory.get(pointer + Value(1)))
+      case Value(4) => EqualOperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)), memory.get(pointer + Value(3)))
+      case Value(6) => JumpOperation(memory.get(pointer + Value(1)))
+      case Value(7) => JumpIfTrueOperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)))
+      case Value(8) => JumpIfFalseOperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)))
       case Value(9) => AddOperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)), memory.get(pointer + Value(3)))
       case Value(19) => OuputOperation(memory.get(pointer + Value(1)))
       case Value(21) => NoOperation
@@ -62,7 +68,7 @@ case class Machine (pointer: Value, memory: Memory, stack: mutable.Stack[Value])
 object Machine {
 
   def loadProgramme(programme: List[Value]): Machine =
-    Machine(pointer = Value(0), Memory(programme.zipWithIndex.map(l => (Value(l._2), l._1)).toMap, Vector(0,0,0,0,0,0,0,0).map(Value)), mutable.Stack.empty)
+    Machine(pointer = Value(0), Memory(programme.zipWithIndex.map(l => (Value(l._2), l._1)).toMap, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq.empty)
 
 
 
