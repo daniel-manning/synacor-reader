@@ -118,6 +118,33 @@ class OperationSpec extends AnyFreeSpec with Matchers {
     }
   }
 
+  "Greater Than Operation" - {
+    "when test values are registers and a is greater than b set address to 1" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(9,8,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = GreaterThanOperation(Value(32768), Value(32768), Value(32769)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(1)
+    }
+
+    "when test values are values and a is greater than b set address to 1" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(9,9,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = GreaterThanOperation(Value(32768), Value(155), Value(122)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(1)
+    }
+
+    "when test values are registers and a is smaller than b set address to 0" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(5,9,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = GreaterThanOperation(Value(32768), Value(32768), Value(32769)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(0)
+    }
+
+    "when test values are values and a is smaller than b set address to 0" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(9,9,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = GreaterThanOperation(Value(32768), Value(144), Value(155)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(0)
+    }
+  }
+
+
   "Push operation" - {
     "when a value is pushed it must go on the stack" in {
       val programme = Machine(Value(0), Memory(Map.empty, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq.empty)
@@ -144,6 +171,20 @@ class OperationSpec extends AnyFreeSpec with Matchers {
       intercept[NoSuchElementException](
         PopOperation(Value(32768)).run()(programme, runningSettings)
       )
+    }
+  }
+
+  "Bitwise AND Operation" - {
+    "two values have bitwise AND done and value stored in address" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = BitwiseANDOperation(Value(32768), Value(111), Value(121)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(105)
+    }
+
+    "two registers have bitwise AND done and value stored in address" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(111,121,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = BitwiseANDOperation(Value(32768), Value(32768), Value(32769)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(105)
     }
   }
 

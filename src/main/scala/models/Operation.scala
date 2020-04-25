@@ -80,6 +80,28 @@ case class EqualOperation(address: Value, valueA: Value, valueB: Value) extends 
   }
 }
 
+case class GreaterThanOperation(address: Value, valueA: Value, valueB: Value) extends Operation {
+  val instructionLength = Value(4)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"Running Greater than Operation setting address: $address by testing value of a: $valueA and b: $valueB")
+    programme.copy(pointer = programme.pointer + instructionLength,
+    memory = programme.memory.set(address, if(interpret(valueA).value > interpret(valueB).value) Value(1) else Value(0))
+    )
+  }
+}
+
+case class BitwiseANDOperation(address: Value, valueA: Value, valueB: Value) extends Operation {
+  val instructionLength = Value(4)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"Running Greater than Operation setting address: $address by testing value of a: $valueA and b: $valueB")
+    programme.copy(pointer = programme.pointer + instructionLength,
+      memory = programme.memory.set(address, Value(interpret(valueA).value & interpret(valueB).value))
+    )
+  }
+}
+
 case class PushOperation(value: Value) extends Operation {
   val instructionLength = Value(2)
 
