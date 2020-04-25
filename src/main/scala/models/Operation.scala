@@ -91,6 +91,19 @@ case class PushOperation(value: Value) extends Operation {
   }
 }
 
+case class PopOperation(address: Value) extends Operation {
+  val instructionLength = Value(2)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"Running Pop Operation taking value off the stack and storing it at address: $address")
+    val value = programme.stack.head
+    programme.copy(pointer = programme.pointer + instructionLength,
+      memory = programme.memory.set(address, value),
+      stack = programme.stack.tail
+    )
+  }
+}
+
 case class AddOperation(address: Value, valueA: Value, valueB: Value) extends Operation {
   val instructionLength = Value(4)
 

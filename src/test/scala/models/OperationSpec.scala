@@ -132,4 +132,19 @@ class OperationSpec extends AnyFreeSpec with Matchers {
     }
   }
 
+  "Pop Operation" - {
+    "when a value is on the stack it must be popped and stored" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq(Value(155)))
+      val finalProgramme = PopOperation(Value(32768)).run()(programme, runningSettings)
+      finalProgramme.memory.get(Value(32768)) mustBe Value(155)
+    }
+
+    "when there is no value on the stack an error is thrown" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(9,9,0,0,0,0,0,0).map(Value)), Seq.empty)
+      intercept[NoSuchElementException](
+        PopOperation(Value(32768)).run()(programme, runningSettings)
+      )
+    }
+  }
+
 }
