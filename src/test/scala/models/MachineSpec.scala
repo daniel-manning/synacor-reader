@@ -3,8 +3,6 @@ package models
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-import scala.collection.mutable
-
 class MachineSpec extends AnyFreeSpec with Matchers {
 
   "Machine" - {

@@ -1,7 +1,7 @@
-import java.nio.{ByteBuffer, ByteOrder}
 import java.nio.file.{Files, Paths}
+import java.nio.{ByteBuffer, ByteOrder}
 
-import models.{Machine, Memory, RunningSettings, Value}
+import models.{Machine, RunningSettings, Value}
 
 object VirtualMachine extends App {
 

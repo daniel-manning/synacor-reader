@@ -180,7 +180,28 @@ case class MultiplyOperation(address: Value, valueA: Value, valueB: Value) exten
   }
 }
 
-case class OuputOperation(outputValue: Value) extends Operation {
+case class ModOperation(address: Value, valueA: Value, valueB: Value) extends Operation {
+  val instructionLength = Value(4)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"Running Mod Operation with values: (Address: $address, a: $valueA, b: $valueB)")
+    programme.copy(pointer = programme.pointer + instructionLength,
+      memory = programme.memory.set(address, interpret(valueA) % interpret(valueB)))
+  }
+}
+
+case class ReadMemoryOperation(addressA: Value, addressB: Value) extends Operation {
+  val instructionLength = Value(3)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"registers: ${programme.memory.registers}")
+    debugLog(s"Running Read Memory Operation with values: (Address: $addressA, addressValue: $addressB)")
+    programme.copy(pointer = programme.pointer + instructionLength,
+      memory = programme.memory.set(addressA, programme.memory.getFromMainMemory(addressB)))
+  }
+}
+
+case class OutputOperation(outputValue: Value) extends Operation {
   val instructionLength = Value(2)
 
   def run()(implicit programme: Machine, settings: RunningSettings): Machine = {

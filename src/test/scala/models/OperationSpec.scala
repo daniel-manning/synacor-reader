@@ -3,8 +3,6 @@ package models
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
-import scala.collection.mutable
-
 class OperationSpec extends AnyFreeSpec with Matchers {
   implicit val runningSettings: RunningSettings = RunningSettings("test", debugOutput = false)
 
@@ -25,6 +23,33 @@ class OperationSpec extends AnyFreeSpec with Matchers {
       val finalProgramme = MultiplyOperation(Value(32768), Value(32769), Value(4)).run()(programme, runningSettings)
 
       finalProgramme.memory.get(Value(32768)) mustBe Value(8)
+    }
+  }
+
+  "Mod Operation" - {
+
+    "when given a number of a register must use the register's value" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(8,5,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = ModOperation(Value(32768), Value(32769), Value(3)).run()(programme, runningSettings)
+
+      finalProgramme.memory.get(Value(32768)) mustBe Value(2)
+    }
+  }
+
+  "Read Memory Operation" - {
+
+    "when given a main memory address must store it's value in another address" in {
+      val programme = Machine(Value(0), Memory(Map(Value(155) -> Value(233)), Vector(8,2,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = ReadMemoryOperation(Value(32768), Value(155)).run()(programme, runningSettings)
+
+      finalProgramme.memory.get(Value(32768)) mustBe Value(233)
+    }
+
+    "when given a register address  must store it's value in another address" in {
+      val programme = Machine(Value(0), Memory(Map(Value(155) -> Value(233)), Vector(8,155,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = ReadMemoryOperation(Value(32768), Value(32769)).run()(programme, runningSettings)
+
+      finalProgramme.memory.get(Value(32768)) mustBe Value(233)
     }
   }
 
