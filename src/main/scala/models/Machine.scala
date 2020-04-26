@@ -64,6 +64,7 @@ case class Machine (pointer: Value, memory: Memory, stack: Seq[Value]) extends L
       case Value(15) => ReadMemoryOperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)))
       case Value(16) => WriteMemoryOperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)))
       case Value(17) => CallOperation(memory.get(pointer + Value(1)))
+      case Value(18) => RetOperation
       case Value(19) => OutputOperation(memory.get(pointer + Value(1)))
       case Value(21) => NoOperation
     }

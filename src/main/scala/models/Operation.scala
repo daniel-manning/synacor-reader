@@ -212,6 +212,18 @@ case class WriteMemoryOperation(addressA: Value, value: Value) extends Operation
   }
 }
 
+case object RetOperation extends Operation {
+  val instructionLength = Value(1)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"Running Ret Operation")
+    programme.copy(
+      pointer = programme.memory.writeOnlyToMainMemory(programme.stack.head),
+      stack = programme.stack.tail
+    )
+  }
+}
+
 case class OutputOperation(outputValue: Value) extends Operation {
   val instructionLength = Value(2)
 

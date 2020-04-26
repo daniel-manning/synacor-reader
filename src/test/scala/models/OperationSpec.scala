@@ -76,6 +76,32 @@ class OperationSpec extends AnyFreeSpec with Matchers {
     }
   }
 
+  "Ret Operation" - {
+    "when there is a value in the stack jump to it" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(177,155,0,0,0,0,0,0).map(Value)), Seq(Value(177)))
+      val finalProgramme = RetOperation.run()(programme, runningSettings)
+
+      finalProgramme.pointer mustBe Value(177)
+      finalProgramme.stack.length mustBe 0
+    }
+
+    "when there is a register in the stack jump to it's value" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(177,155,0,0,0,0,0,0).map(Value)), Seq(Value(32768)))
+      val finalProgramme = RetOperation.run()(programme, runningSettings)
+
+      finalProgramme.pointer mustBe Value(177)
+      finalProgramme.stack.length mustBe 0
+    }
+
+    "when there is a no value in the stack halt" in {
+      val programme = Machine(Value(0), Memory(Map.empty, Vector(177,155,0,0,0,0,0,0).map(Value)), Seq.empty)
+
+      intercept[NoSuchElementException](
+        RetOperation.run()(programme, runningSettings)
+      )
+    }
+  }
+
   "Jump Operation" - {
     "when given an address must move pointer to that address" in {
       val programme = Machine(Value(0), Memory(Map.empty, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq.empty)
