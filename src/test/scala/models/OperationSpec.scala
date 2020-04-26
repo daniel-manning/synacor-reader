@@ -53,6 +53,29 @@ class OperationSpec extends AnyFreeSpec with Matchers {
     }
   }
 
+  "Write Memory Operation" - {
+     "when given a main memory address write to it from value" in {
+       val programme = Machine(Value(0), Memory(Map(Value(155) -> Value(233)), Vector(8,2,0,0,0,0,0,0).map(Value)), Seq.empty)
+       val finalProgramme = WriteMemoryOperation(Value(155), Value(177)).run()(programme, runningSettings)
+
+       finalProgramme.memory.get(Value(155)) mustBe Value(177)
+     }
+
+    "when given a main memory address write to it from a register stored value" in {
+      val programme = Machine(Value(0), Memory(Map(Value(155) -> Value(233), Value(177) -> Value(277)), Vector(177,2,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = WriteMemoryOperation(Value(155), Value(32768)).run()(programme, runningSettings)
+
+      finalProgramme.memory.get(Value(155)) mustBe Value(177)
+    }
+
+    "when given a register stored main memory address write to it from value" in {
+      val programme = Machine(Value(0), Memory(Map(Value(155) -> Value(233), Value(177) -> Value(277)), Vector(177,155,0,0,0,0,0,0).map(Value)), Seq.empty)
+      val finalProgramme = WriteMemoryOperation(Value(32769), Value(32768)).run()(programme, runningSettings)
+
+      finalProgramme.memory.get(Value(155)) mustBe Value(177)
+    }
+  }
+
   "Jump Operation" - {
     "when given an address must move pointer to that address" in {
       val programme = Machine(Value(0), Memory(Map.empty, Vector(0,0,0,0,0,0,0,0).map(Value)), Seq.empty)

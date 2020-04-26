@@ -5,7 +5,7 @@ import models.{Machine, RunningSettings, Value}
 
 object VirtualMachine extends App {
 
-  implicit val settings: RunningSettings = RunningSettings("Synacor", debugOutput = false)
+  implicit val settings: RunningSettings = RunningSettings("Synacor", debugOutput = true)
 
   val byteArray = Files.readAllBytes(Paths.get("../challenge.bin"))
 

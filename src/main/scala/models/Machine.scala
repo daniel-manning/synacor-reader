@@ -21,6 +21,14 @@ case class Memory(programme: Map[Value, Value], registers: IndexedSeq[Value]) ex
     }
   }
 
+  def writeOnlyToMainMemory(address: Value)(implicit settings: RunningSettings): Value = {
+    if(address.value < 32768) {
+      address
+    } else {
+      writeOnlyToMainMemory(registers(address.value - 32768))
+    }
+  }
+
   def set(address: Value, value: Value): Memory = {
     if(address.value < 32768) {
       this.copy(programme = programme.updated(address, value))
@@ -54,6 +62,7 @@ case class Machine (pointer: Value, memory: Memory, stack: Seq[Value]) extends L
       case Value(13) => BitwiseOROperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)), memory.get(pointer + Value(3)))
       case Value(14) => BitwiseNOTOperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)))
       case Value(15) => ReadMemoryOperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)))
+      case Value(16) => WriteMemoryOperation(memory.get(pointer + Value(1)), memory.get(pointer + Value(2)))
       case Value(17) => CallOperation(memory.get(pointer + Value(1)))
       case Value(19) => OutputOperation(memory.get(pointer + Value(1)))
       case Value(21) => NoOperation

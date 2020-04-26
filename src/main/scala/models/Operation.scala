@@ -201,6 +201,17 @@ case class ReadMemoryOperation(addressA: Value, addressB: Value) extends Operati
   }
 }
 
+case class WriteMemoryOperation(addressA: Value, value: Value) extends Operation {
+  val instructionLength = Value(3)
+
+  def run()(implicit programme: Machine, settings: RunningSettings): Machine = {
+    debugLog(s"registers: ${programme.memory.registers}")
+    debugLog(s"Running Write Memory Operation with values: (Address: $addressA, value: $value)")
+    programme.copy(pointer = programme.pointer + instructionLength,
+      memory = programme.memory.set(programme.memory.writeOnlyToMainMemory(addressA), interpret(value)))
+  }
+}
+
 case class OutputOperation(outputValue: Value) extends Operation {
   val instructionLength = Value(2)
 
