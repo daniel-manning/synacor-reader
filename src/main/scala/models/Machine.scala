@@ -1,5 +1,7 @@
 package models
 
+import java.util.Scanner
+
 case class RunningSettings(label: String, debugOutput: Boolean)
 
 case class Memory(programme: Map[Value, Value], registers: IndexedSeq[Value]) extends Logable {
@@ -66,15 +68,16 @@ case class Machine (pointer: Value, memory: Memory, stack: Seq[Value]) extends L
       case Value(17) => CallOperation(memory.get(pointer + Value(1)))
       case Value(18) => RetOperation
       case Value(19) => OutputOperation(memory.get(pointer + Value(1)))
+      case Value(20) => InputOperation(memory.get(pointer + Value(1)))
       case Value(21) => NoOperation
     }
   }
 
-  def runProgramme()(implicit settings: RunningSettings): Machine = {
+  def runProgramme()(implicit scanner: Scanner, settings: RunningSettings): Machine = {
     LazyList.unfold(this) {
       p =>
         val op = p.nextOperation()
-        val nextProgramme = op.run()(p, settings)
+        val nextProgramme = op.run()(p, scanner, settings)
 
         op match {
           case ExitOperation => None

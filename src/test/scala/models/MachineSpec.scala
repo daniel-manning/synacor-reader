@@ -1,5 +1,7 @@
 package models
 
+import java.util.Scanner
+
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 
@@ -8,6 +10,7 @@ class MachineSpec extends AnyFreeSpec with Matchers {
   "Machine" - {
     "when given a simple programme should operate correctly" in {
       implicit val runningSettings: RunningSettings = RunningSettings("test", debugOutput = false)
+      implicit val scanner: Scanner = new Scanner("")
 
       val beginningState = Machine(
         pointer = Value(0),

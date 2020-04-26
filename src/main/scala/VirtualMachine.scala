@@ -1,11 +1,16 @@
 import java.nio.file.{Files, Paths}
 import java.nio.{ByteBuffer, ByteOrder}
+import java.util.Scanner
 
 import models.{Machine, RunningSettings, Value}
 
 object VirtualMachine extends App {
 
-  implicit val settings: RunningSettings = RunningSettings("Synacor", debugOutput = true)
+  //character by character input
+  implicit val scanner: Scanner = new Scanner(System.in)
+  scanner.useDelimiter("")
+
+  implicit val settings: RunningSettings = RunningSettings("Synacor", debugOutput = false)
 
   val byteArray = Files.readAllBytes(Paths.get("../challenge.bin"))
 
