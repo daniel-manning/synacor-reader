@@ -1,7 +1,6 @@
 package models
 
 import java.util.Scanner
-
 import models.RetOperation.debugLog
 
 sealed trait Operation extends Logable {
@@ -234,10 +233,23 @@ case class InputOperation(address: Value) extends Operation {
   def run()(implicit programme: Machine, scanner: Scanner, settings: RunningSettings): Machine = {
     debugLog(s"Running Input Operation")
     val input = scanner.next().charAt(0).toInt
-    programme.copy(
-      pointer = programme.pointer + instructionLength,
-      memory = programme.memory.set(address, Value(input))
-    )
+    //make a fundamental assumption that keystroke 80 - F1
+    //make a fundamental assumption that keystroke 81 - F2
+    //make a fundamental assumption that keystroke 82 - F3
+    //Hijack Keyboard input for special operations
+    if (input == 80) {
+      //save instructions to file
+      MemoryWriter.writeToFile(programme)
+      run()
+    } else if (input == 81) {
+      //load instructions from file
+      MemoryWriter.loadFromFile
+    } else {
+      programme.copy(
+        pointer = programme.pointer + instructionLength,
+        memory = programme.memory.set(address, Value(input))
+      )
+    }
   }
 }
 

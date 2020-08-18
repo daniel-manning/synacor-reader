@@ -1,3 +1,4 @@
+import java.io.{BufferedWriter, File, FileWriter, Writer}
 import java.nio.file.{Files, Paths}
 import java.nio.{ByteBuffer, ByteOrder}
 import java.util.Scanner
@@ -10,7 +11,10 @@ object VirtualMachine extends App {
   implicit val scanner: Scanner = new Scanner(System.in)
   scanner.useDelimiter("")
 
-  implicit val settings: RunningSettings = RunningSettings("Synacor", debugOutput = false)
+  //flush debug logs off the system out
+  val out: BufferedWriter = new BufferedWriter(new FileWriter("output-debug.log"));
+
+  implicit val settings: RunningSettings = RunningSettings("Synacor", debugOutput = true, debugWriter = out)
 
   val byteArray = Files.readAllBytes(Paths.get("../challenge.bin"))
 
@@ -19,6 +23,12 @@ object VirtualMachine extends App {
     bb.order(ByteOrder.LITTLE_ENDIAN)
     bb.getInt
   }.toList
+
+  //output op code lists
+/*  val file = new File("output.debug")
+  val bw = new BufferedWriter(new FileWriter(file))
+  bw.write(intProgrammeList.mkString(","))
+  bw.close()*/
 
 
   val machine = Machine.loadProgramme(intProgrammeList.map(Value))

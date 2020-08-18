@@ -1,8 +1,9 @@
 package models
 
+import java.io.{BufferedWriter, Writer}
 import java.util.Scanner
 
-case class RunningSettings(label: String, debugOutput: Boolean)
+case class RunningSettings(label: String, debugOutput: Boolean, debugWriter: BufferedWriter)
 
 case class Memory(programme: Map[Value, Value], registers: IndexedSeq[Value]) extends Logable {
   def get(address: Value)(implicit settings: RunningSettings): Value = {
